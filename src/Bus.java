@@ -50,8 +50,10 @@ public class Bus extends Thread {
 
     public void stopBus(Route route, Integer stopTime) throws InterruptedException {
         for (int i = 0; i < this.getRoute().getStops().size(); i++) {
-            synchronized (route.getStops().get(i)) {
+            synchronized (route.getStops().get(i).getBusAmount()) {
                 if (this.getRoute().getStops().get(i).getBusAmount() == 0) {
+                    System.out.println(getBusName() + " is waiting on "
+                            + this.getRoute().getStops().get(i).getTitle() + " to stop...");
                     try {
                         this.wait();
                     } catch (IllegalMonitorStateException exception) {}
@@ -59,8 +61,9 @@ public class Bus extends Thread {
                     this.getRoute().getStops().get(i).setBusAmount(this.getRoute().getStops().get(i).getBusAmount() - 1);
                     System.out.println(getBusName() + " has arrived on " + this.getRoute().getStops().get(i).getTitle());
                     try {
-                        this.wait(stopTime);
+                        this.sleep(this.getStopTime());
                     } catch (Exception exception) {}
+                    System.out.println(getBusName() + " is departing from " + this.getRoute().getStops().get(i).getTitle());
                     this.getRoute().getStops().get(i).setBusAmount(this.getRoute().getStops().get(i).getBusAmount() + 1);
                     try {
                         route.notifyAll();
