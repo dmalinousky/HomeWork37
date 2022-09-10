@@ -52,11 +52,11 @@ public class Bus extends Thread {
         for (int i = 0; i < this.getRoute().getStops().size(); i++) {
             synchronized (route.getStops().get(i).getBusAmount()) {
                 if (this.getRoute().getStops().get(i).getBusAmount() == 0) {
-                    System.out.println(getBusName() + " is waiting on "
-                            + this.getRoute().getStops().get(i).getTitle() + " to stop...");
+                    System.out.println(getBusName() + " is waiting on stop " + this.getRoute().getStops().get(i).getTitle());
                     try {
-                        this.wait();
+                        this.sleep(500);
                     } catch (IllegalMonitorStateException exception) {}
+                    i--;
                 } else if (this.getRoute().getStops().get(i).getBusAmount() > 0) {
                     this.getRoute().getStops().get(i).setBusAmount(this.getRoute().getStops().get(i).getBusAmount() - 1);
                     System.out.println(getBusName() + " has arrived on " + this.getRoute().getStops().get(i).getTitle());
